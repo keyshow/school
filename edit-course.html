@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程排课系统 - 添加课程</title>
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --danger-color: #ea4335;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-left h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .breadcrumb-separator {
+            margin: 0 5px;
+            color: #999;
+        }
+        
+        .form-container {
+            background-color: white;
+            border-radius: 5px;
+            padding: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .form-title {
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        textarea {
+            min-height: 100px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #ddd;
+            color: var(--dark-gray);
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        
+        .alert-danger {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>课程排课系统</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="user-avatar">张</div>
+                    <span>张老师</span>
+                </div>
+                <button class="logout-btn">退出</button>
+            </div>
+        </header>
+        
+        <div class="breadcrumb">
+            <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+            <span class="breadcrumb-separator">/</span>
+            <span>添加课程</span>
+        </div>
+        
+        <div class="form-container">
+            <h2 class="form-title">添加新课程</h2>
+            
+            <div id="form-alert" class="alert"></div>
+            
+            <form id="course-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="student-name">学生姓名</label>
+                        <input type="text" id="student-name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="course-name">课程名称</label>
+                        <input type="text" id="course-name" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="course-day">上课星期</label>
+                        <select id="course-day" required>
+                            <option value="">请选择星期</option>
+                            <option value="1">星期一</option>
+                            <option value="2">星期二</option>
+                            <option value="3">星期三</option>
+                            <option value="4">星期四</option>
+                            <option value="5">星期五</option>
+                            <option value="6">星期六</option>
+                            <option value="7">星期日</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="teacher-name">教师姓名</label>
+                        <input type="text" id="teacher-name">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="start-date">开始日期</label>
+                        <input type="date" id="start-date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="end-date">结束日期</label>
+                        <input type="date" id="end-date" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="start-time">开始时间</label>
+                        <input type="time" id="start-time" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="end-time">结束时间</label>
+                        <input type="time" id="end-time" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="course-room">教室</label>
+                        <input type="text" id="course-room">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="course-color">课程颜色</label>
+                        <input type="color" id="course-color" value="#4285f4">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="course-notes">备注</label>
+                    <textarea id="course-notes"></textarea>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> 保存课程
+                    </button>
+                    <button type="reset" class="btn btn-outline">
+                        <i class="fas fa-undo"></i> 重置表单
+                    </button>
+                    <a href="index.html" class="btn btn-outline">
+                        <i class="fas fa-times"></i> 取消
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 设置默认日期
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            document.getElementById('start-date').valueAsDate = today;
+            
+            // 默认结束日期为一周后
+            const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+            document.getElementById('end-date').valueAsDate = nextWeek;
+            
+            // 设置默认教师名为当前用户
+            document.getElementById('teacher-name').value = '张老师';
+        });
+        
+        // 表单提交
+        document.getElementById('course-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 获取表单数据
+            const studentName = document.getElementById('student-name').value.trim();
+            const courseName = document.getElementById('course-name').value.trim();
+            const courseDay = document.getElementById('course-day').value;
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            const startTime = document.getElementById('start-time').value;
+            const endTime = document.getElementById('end-time').value;
+            const teacherName = document.getElementById('teacher-name').value.trim();
+            const courseRoom = document.getElementById('course-room').value.trim();
+            const courseColor = document.getElementById('course-color').value;
+            const courseNotes = document.getElementById('course-notes').value.trim();
+            
+            // 验证数据
+            if (!studentName || !courseName || !courseDay || !startDate || !endDate || !startTime || !endTime) {
+                showAlert('请填写所有必填字段', 'danger');
+                return;
+            }
+            
+            if (new Date(startDate) > new Date(endDate)) {
+                showAlert('结束日期不能早于开始日期', 'danger');
+                return;
+            }
+            
+            if (startTime >= endTime) {
+                showAlert('结束时间必须晚于开始时间', 'danger');
+                return;
+            }
+            
+            // 在实际应用中，这里会保存课程数据
+            showAlert('课程保存成功', 'success');
+            
+            // 3秒后返回首页
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        });
+        
+        // 显示提示消息
+        function showAlert(message, type) {
+            const alert = document.getElementById('form-alert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            alert.className = `alert alert-${type}`;
+        }
+        
+        // 退出登录
+        document.querySelector('.logout-btn').addEventListener('

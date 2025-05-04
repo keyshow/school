@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程排课系统 - 登录/注册</title>
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --danger-color: #ea4335;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .auth-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #3367d6;
+        }
+        
+        .secondary-btn {
+            background-color: var(--secondary-color);
+        }
+        
+        .secondary-btn:hover {
+            background-color: #2d8e47;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .alert {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .forgot-password {
+            text-align: right;
+            margin-top: 10px;
+        }
+        
+        .forgot-password a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h1>课程排课系统</h1>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="login">登录</div>
+            <div class="tab" data-tab="register">注册</div>
+        </div>
+        
+        <!-- 登录表单 -->
+        <div id="login" class="tab-content active">
+            <div id="login-alert" class="alert"></div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">电子邮件</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">密码</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                
+                <div class="forgot-password">
+                    <a href="#" id="forgot-password">忘记密码?</a>
+                </div>
+                
+                <button type="submit">登录</button>
+            </form>
+        </div>
+        
+        <!-- 注册表单 -->
+        <div id="register" class="tab-content">
+            <div id="register-alert" class="alert"></div>
+            
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-name">姓名</label>
+                    <input type="text" id="register-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-email">电子邮件</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-password">密码</label>
+                    <input type="password" id="register-password" required minlength="6">
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-confirm-password">确认密码</label>
+                    <input type="password" id="register-confirm-password" required>
+                </div>
+                
+                <button type="submit" class="secondary-btn">注册</button>
+            </form>
+        </div>
+        
+        <!-- 忘记密码表单 (默认隐藏) -->
+        <div id="forgot-password-form" class="tab-content">
+            <div id="forgot-alert" class="alert"></div>
+            
+            <form id="reset-form">
+                <div class="form-group">
+                    <label for="reset-email">电子邮件</label>
+                    <input type="email" id="reset-email" required>
+                </div>
+                
+                <button type="submit">发送重置链接</button>
+                <button type="button" id="back-to-login" class="secondary-btn">返回登录</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 切换标签页
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // 更新活动标签
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // 更新活动内容
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+                
+                // 清除所有警告
+                document.querySelectorAll('.alert').forEach(alert => {
+                    alert.style.display = 'none';
+                    alert.textContent = '';
+                });
+            });
+        });
+        
+        // 忘记密码链接
+        document.getElementById('forgot-password').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // 隐藏所有内容
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // 显示忘记密码表单
+            document.getElementById('forgot-password-form').classList.add('active');
+            
+            // 更新标签样式
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        });
+        
+        // 返回登录
+        document.getElementById('back-to-login').addEventListener('click', function() {
+            // 隐藏忘记密码表单
+            document.getElementById('forgot-password-form').classList.remove('active');
+            
+            // 显示登录表单
+            document.getElementById('login').classList.add('active');
+            document.querySelector('.tab[data-tab="login"]').classList.add('active');
+        });
+        
+        // 登录表单提交
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const alert = document.getElementById('login-alert');
+            
+            // 在实际应用中，这里会验证用户凭据
+            // 模拟成功登录
+            alert.textContent = '登录成功，正在跳转...';
+            alert.style.display = 'block';
+            alert.className = 'alert alert-success';
+            
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        });
+        
+        // 注册表单提交
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const alert = document.getElementById('register-alert');
+            
+            // 验证密码匹配
+            if (password !== confirmPassword) {
+                alert.textContent = '两次输入的密码不匹配';
+                alert.style.display = 'block';
+                alert.className = 'alert alert-danger';
+                return;
+            }
+            
+            // 在实际应用中，这里会注册新用户
+            alert.textContent = '注册成功，请登录';
+            alert.style.display = 'block';
+            alert.className = 'alert alert-success';
+            
+            // 切换到登录标签
+            document.querySelector('.tab[data-tab="login"]').click();
+        });
+        
+        // 忘记密码表单提交
+        document.getElementById('reset-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('reset-email').value;
+            const alert = document.getElementById('forgot-alert');
+            
+            // 在实际应用中，这里会发送密码重置链接
+            alert.textContent = '重置链接已发送到您的邮箱';
+            alert.style.display = 'block';
+            alert.className = 'alert alert-success';
+        });
+    </script>
+</body>
+</html>
