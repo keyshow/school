@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程排课系统 - 查看课表</title>
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --danger-color: #ea4335;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-left h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .breadcrumb-separator {
+            margin: 0 5px;
+            color: #999;
+        }
+        
+        .schedule-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .view-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        label {
+            font-weight: 500;
+        }
+        
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #ddd;
+            color: var(--dark-gray);
+        }
+        
+        /* 日历视图样式 */
+        .calendar-view {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .calendar-header {
+            display: grid;
+            grid-template-columns: 100px repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .calendar-header-cell {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+        }
+        
+        .calendar-body {
+            display: grid;
+            grid-template-columns: 100px repeat(7, 1fr);
+            gap: 5px;
+        }
+        
+        .time-cell {
+            background-color: var(--light-gray);
+            padding: 10px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .day-cell {
+            min-height: 80px;
+            border: 1px solid #eee;
+            padding: 5px;
+            position: relative;
+        }
+        
+        .course-event {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .course-event:hover {
+            opacity: 0.9;
+        }
+        
+        /* 表格视图样式 */
+        .table-view {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .schedule-table th, .schedule-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .schedule-table th {
+            background-color: var(--light-gray);
+            font-weight: bold;
+        }
+        
+        .schedule-table td {
+            min-height: 60px;
+        }
+        
+        .table-course {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px;
+            margin: 2px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        /* 导出和提醒按钮 */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .schedule-controls {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .filter-group {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+            }
+            
+            .view-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .calendar-header, .calendar-body {
+                grid-template-columns: 60px repeat(7, 1fr);
+            }
+            
+            .time-cell {
+                font-size: 12px;
+                padding: 5px;
+            }
+            
+            .course-event {
+                font-size: 10px;
+                padding: 3px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>课程排课系统</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="user-avatar">Show</div>
+                    <span>王秀老师</span>
+                </div>
+                <button class="logout-btn">退出</button>
+            </div>
+        </header>
+        
+        <div class="breadcrumb">
+            <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+            <span class="breadcrumb-separator">/</span>
+            <span>查看课表</span>
+        </div>
+        
+        <div class="schedule-controls">
+            <div class="filter-group">
+                <div>
+                    <label for="student-filter">学生：</label>
+                    <select id="student-filter">
+                        <option value="">所有学生</option>
+                        <option value="李明">李明</option>
+                        <option value="王芳">王芳</option>
+                        <option value="张伟">张伟</option>
+                        <option value="刘洋">刘洋</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="week-filter">周数：</label>
+                    <input type="week" id="week-filter">
+                </div>
+                
+                <button class="btn btn-primary" id="apply-filter">
+                    <i class="fas fa-filter"></i> 应用筛选
+                </button>
+            </div>
+            
+            <div class="view-group">
+                <button class="btn btn-outline active" id="view-calendar-btn">
+                    <i class="fas fa-calendar-alt"></i> 日历视图
+                </button>
+                <button class="btn btn-outline" id="view-table-btn">
+                    <i class="fas fa-table"></i> 表格视图
+                </button>
+            </div>
+        </div>
+        
+        <!-- 日历视图 -->
+        <div class="calendar-view" id="calendar-view">
+            <div class="calendar-header">
+                <div class="calendar-header-cell">时间</div>
+                <div class="calendar-header-cell">星期一</div>
+                <div class="calendar-header-cell">星期二</div>
+                <div class="calendar-header-cell">星期三</div>
+                <div class="calendar-header-cell">星期四</div>
+                <div class="calendar-header-cell">星期五</div>
+                <div class="calendar-header-cell">星期六</div>
+                <div class="calendar-header-cell">星期日</div>
+            </div>
+            
+            <div class="calendar-body" id="calendar-body">
+                <!-- 动态生成日历内容 -->
+            </div>
+        </div>
+        
+        <!-- 表格视图 -->
+        <div class="table-view" id="table-view">
+            <table class="schedule-table" id="schedule-table">
+                <thead>
+                    <tr>
+                        <th>时间</th>
+                        <th>星期一</th>
+                        <th>星期二</th>
+                        <th>星期三</th>
+                        <th>星期四</th>
+                        <th>星期五</th>
+                        <th>星期六</th>
+                        <th>星期日</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 动态生成表格内容 -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-secondary" id="export-btn">
+                <i class="fas fa-download"></i> 导出课表
+            </button>
+            <button class="btn btn-primary" id="reminder-btn">
+                <i class="fas fa-bell"></i> 设置提醒
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 课程数据
+        const courses = [
+            { student: "李明", name: "高等数学", day: 1, startTime: "08:00", endTime: "09:30", room: "301", color: "#4285f4" },
+            { student: "王芳", name: "英语口语", day: 3, startTime: "14:00", endTime: "15:30", room: "203", color: "#ea4335" },
+            { student: "张伟", name: "计算机编程", day: 5, startTime: "10:00", endTime: "11:30", room: "402", color: "#34a853" },
+            { student: "刘洋", name: "物理实验", day: 2, startTime: "10:00", endTime: "12:00", room: "105", color: "#fbbc05" },
+            { student: "李明", name: "线性代数", day: 4, startTime: "13:00", endTime: "14:30", room: "302", color: "#4285f4" }
+        ];
+
+        // 时间槽
+        const timeSlots = [
+            "08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00",
+            "14:00-15:00", "15:00-16:00", "16:00-17:00"
+        ];
+
+        // 设置当前周
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const weekStart = getWeekStartDate(now);
+            
+            // 设置周选择器的值为当前周
+            const year = weekStart.getFullYear();
+            const month = String(weekStart.getMonth() + 1).padStart(2, '0');
+            const day = String(weekStart.getDate()).padStart(2, '0');
+            document.getElementById('week-filter').value = `${year}-W${String(getWeekNumber(weekStart)).padStart(2, '0')}`;
+            
+            // 初始化日历和表格
+            updateCalendar();
+            updateTable();
+        });
+        
+        // 视图切换
+        document.getElementById('view-calendar-btn').addEventListener('click', function() {
+            document.getElementById('calendar-view').style.display = 'block';
+            document.getElementById('table-view').style.display = 'none';
+            this.classList.add('active');
+            document.getElementById('view-table-btn').classList.remove('active');
+        });
+        
+        document.getElementById('view-table-btn').addEventListener('click', function() {
+            document.getElementById('calendar-view').style.display = 'none';
+            document.getElementById('table-view').style.display = 'block';
+            this.classList.add('active');
+            document.getElementById('view-calendar-btn').classList.remove('active');
+        });
+        
+        // 应用筛选
+        document.getElementById('apply-filter').addEventListener('click', function() {
+            updateCalendar();
+            updateTable();
+        });
+        
+        // 导出课表
+        document.getElementById('export-btn').addEventListener('click', function() {
+            // 在实际应用中，这里会导出课表为图片或PDF
+            alert('课表导出功能将在实际应用中实现');
+        });
+        
+        // 设置提醒
+        document.getElementById('reminder-btn').addEventListener('click', function() {
+            // 在实际应用中，这里会打开提醒设置模态框
+            alert('提醒设置功能将在实际应用中实现');
+        });
+        
+        // 退出登录
+        document.querySelector('.logout-btn').addEventListener('click', function() {
+            if (confirm('确定要退出登录吗？')) {
+                // 在实际应用中，这里会清除登录状态
+                window.location.href = 'account.html';
+            }
+        });
+        
+        // 更新日历视图
+        function updateCalendar() {
+            const selectedStudent = document.getElementById('student-filter').value;
+            const calendarBody = document.getElementById('calendar-body');
+            calendarBody.innerHTML = '';
+            
+            // 生成时间槽
+            timeSlots.forEach(slot => {
+                // 添加时间单元格
+                const timeCell = document.createElement('div');
+                timeCell.className = 'time-cell';
+                timeCell.textContent = slot;
+                calendarBody.appendChild(timeCell);
+                
+                // 添加每天的单元格
+                for (let day = 1; day <= 7; day++) {
+                    const dayCell = document.createElement('div');
+                    dayCell.className = 'day-cell';
+                    dayCell.setAttribute('data-day', day);
+                    
+                    // 查找匹配的课程
+                    const [startTime, endTime] = slot.split('-');
+                    const matchingCourses = courses.filter(course => {
+                        // 检查学生筛选
+                        if (selectedStudent && course.student !== selectedStudent) return false;
+                        
+                        // 检查星期
+                        if (course.day !== day) return false;
+                        
+                        // 检查时间是否在时间槽内
+                        return isTimeBetween(course.startTime, course.endTime, startTime, endTime);
+                    });
+                    
+                    // 添加匹配的课程
+                    matchingCourses.forEach(course => {
+                        const courseEvent = document.createElement('div');
+                        courseEvent.className = 'course-event';
+                        courseEvent.style.backgroundColor = course.color;
+                        courseEvent.innerHTML = `${course.student} - ${course.name}<br>教室: ${course.room}`;
+                        dayCell.appendChild(courseEvent);
+                    });
+                    
+                    calendarBody.appendChild(dayCell);
+                }
+            });
+        }
+        
+        // 更新表格视图
+        function updateTable() {
+            const selectedStudent = document.getElementById('student-filter').value;
+            const tableBody = document.querySelector('#schedule-table tbody');
+            tableBody.innerHTML = '';
+            
+            // 生成表格行
+            timeSlots.forEach(slot => {
+                const row = document.createElement('tr');
+                
+                // 添加时间单元格
+                const timeCell = document.createElement('td');
+                timeCell.textContent = slot;
+                row.appendChild(timeCell);
+                
+                // 添加每天的单元格
+                for (let day = 1; day <= 7; day++) {
+                    const dayCell = document.createElement('td');
+                    
+                    // 查找匹配的课程
+                    const [startTime, endTime] = slot.split('-');
+                    const matchingCourses = courses.filter(course => {
+                        // 检查学生筛选
+                        if (selectedStudent && course.student !== selectedStudent) return false;
+                        
+                        // 检查星期
+                        if (course.day !== day) return false;
+                        
+                        // 检查时间是否在时间槽内
+                        return isTimeBetween(course.startTime, course.endTime, startTime, endTime);
+                    });
+                    
+                    // 添加匹配的课程
+                    matchingCourses.forEach(course => {
+                        const courseDiv = document.createElement('div');
+                        courseDiv.className = 'table-course';
+                        courseDiv.style.backgroundColor = course.color;
+                        courseDiv.innerHTML = `${course.student} - ${course.name}<br>教室: ${course.room}`;
+                        dayCell.appendChild(courseDiv);
+                    });
+                    
+                    row.appendChild(dayCell);
+                }
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // 辅助函数：检查时间是否在时间槽内
+        function isTimeBetween(courseStart, courseEnd, slotStart, slotEnd) {
+            const courseStartTime = convertToMinutes(courseStart);
+            const courseEndTime = convertToMinutes(courseEnd);
+            const slotStartTime = convertToMinutes(slotStart);
+            const slotEndTime = convertToMinutes(slotEnd);
+            
+            return (courseStartTime < slotEndTime && courseEndTime > slotStartTime);
+        }
+        
+        // 辅助函数：将时间字符串转换为分钟数
+        function convertToMinutes(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+        
+        // 辅助函数：获取一周的开始日期（星期一）
+        function getWeekStartDate(date) {
+            const day = date.getDay() || 7; // 将周日(0)转换为7
+            const diff = date.getDate() - day + (day === 1 ? 0 : 1); // 如果是周一，不需要调整
+            return new Date(date.setDate(diff));
+        }
+        
+        // 辅助函数：获取周数
+        function getWeekNumber(date) {
+            const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+            const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+            return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+        }
+    </script>
+</body>
+</html>
