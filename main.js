@@ -1,7 +1,7 @@
 /​**​
- * 保存课程数据(自动选择API或LocalStorage)
- * @param {Object} courseData 课程数据
- * @returns {Promise<number>} 课程ID
+ * 统一保存课程数据函数
+ * @param {Object} courseData - 课程数据对象
+ * @returns {Promise<number>} - 返回课程ID
  */
 async function saveCourse(courseData) {
     // 生成或保留ID
@@ -16,28 +16,32 @@ async function saveCourse(courseData) {
     }
     
     try {
-        // 尝试使用API保存
+        // 首先尝试使用API保存
         const response = await fetch('/api/courses', {
             method: courseData.id ? 'PUT' : 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(courseData)
         });
         
-        if (!response.ok) throw new Error('API请求失败');
+        if (!response.ok) {
+            throw new Error('API请求失败');
+        }
         
         const result = await response.json();
         return result.id || courseData.id;
         
     } catch (apiError) {
-        console.warn('API保存失败，使用LocalStorage:', apiError);
+        console.warn('API保存失败，回退到LocalStorage:', apiError);
         
-        // 回退到LocalStorage
+        // 回退到LocalStorage方案
         let courses = JSON.parse(localStorage.getItem('courses')) || [];
         
-        // 移除旧版本(如果是编辑)
+        // 如果是编辑，先删除旧数据
         courses = courses.filter(c => c.id !== courseData.id);
         
-        // 添加新数据
+        // 添加新课程
         courses.push(courseData);
         
         // 保存回LocalStorage
@@ -46,7 +50,6 @@ async function saveCourse(courseData) {
         return courseData.id;
     }
 }
-
 /​**​
  * 获取课程列表
  * @returns {Promise<Array>} 课程数组

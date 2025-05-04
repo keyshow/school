@@ -1,3 +1,100 @@
+document.getElementById('course-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // 获取表单数据
+    const courseData = {
+        id: document.getElementById('course-id').value || null,
+        name: document.getElementById('course-name').value.trim(),
+        teacher: document.getElementById('course-teacher').value.trim(),
+        time: document.getElementById('course-time').value.trim(),
+        location: document.getElementById('course-location').value.trim(),
+        status: document.getElementById('course-status').value
+    };
+    
+    // 验证必填字段
+    if (!courseData.name || !courseData.time || !courseData.location) {
+        alert('请填写所有必填字段');
+        return;
+    }
+    
+    try {
+        const saveButton = document.querySelector('#course-form button[type="submit"]');
+        saveButton.disabled = true;
+        saveButton.textContent = '保存中...';
+        
+        // 调用统一保存函数
+        const courseId = await saveCourse(courseData);
+        
+        alert('课程保存成功');
+        window.location.href = `course-detail.html?id=${courseId}`;
+        
+    } catch (error) {
+        console.error('保存课程失败:', error);
+        alert('保存课程失败: ' + error.message);
+    } finally {
+        const saveButton = document.querySelector('#course-form button[type="submit"]');
+        if (saveButton) {
+            saveButton.disabled = false;
+            saveButton.textContent = '保存课程';
+        }
+    }
+});
+
+
+/​**​
+ * 获取课程列表
+ * @returns {Promise<Array>} - 返回课程数组
+ */
+async function getCourses() {
+    try {
+        // 首先尝试从API获取
+        const response = await fetch('/api/courses');
+        
+        if (response.ok) {
+            return await response.json();
+        }
+        
+        throw new Error('API请求失败');
+        
+    } catch (error) {
+        console.warn('API获取失败，使用LocalStorage:', error);
+        
+        // 从LocalStorage获取
+        const courses = JSON.parse(localStorage.getItem('courses')) || [];
+        
+        // 按addedDate降序排序
+        return courses.sort((a, b) => 
+            new Date(b.addedDate) - new Date(a.addedDate)
+        );
+    }
+}
+
+/​**​
+ * 根据ID获取单个课程
+ * @param {number} id - 课程ID
+ * @returns {Promise<Object|null>} - 返回课程对象或null
+ */
+async function getCourseById(id) {
+    try {
+        // 首先尝试从API获取
+        const response = await fetch(`/api/courses/${id}`);
+        
+        if (response.ok) {
+            return await response.json();
+        }
+        
+        throw new Error('API请求失败');
+        
+    } catch (error) {
+        console.warn('API获取失败，使用LocalStorage:', error);
+        
+        // 从LocalStorage查找
+        const courses = JSON.parse(localStorage.getItem('courses')) || [];
+        return courses.find(c => c.id == id) || null;
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', async function() {
     // 加载最近课程
     try {
