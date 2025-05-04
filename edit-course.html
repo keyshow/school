@@ -207,6 +207,43 @@
             }
         }
     </style>
+// 在课程添加/编辑页面保存数据
+function saveCourse(courseData) {
+    // 获取现有课程或初始化空数组
+    let courses = JSON.parse(localStorage.getItem('courses')) || [];
+    
+    // 如果是编辑，先删除旧数据
+    if(courseData.id) {
+        courses = courses.filter(c => c.id !== courseData.id);
+    } else {
+        // 为新课程生成ID
+        courseData.id = Date.now();
+    }
+    
+    // 添加时间戳
+    courseData.addedDate = new Date().toISOString();
+    
+    // 添加新课程
+    courses.push(courseData);
+    
+    // 保存回LocalStorage
+    localStorage.setItem('courses', JSON.stringify(courses));
+    
+    return courseData.id;
+}
+
+// 课程页面 - 保存课程
+async function saveCourse(courseData) {
+    const response = await fetch('/api/courses', {
+        method: courseData.id ? 'PUT' : 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(courseData)
+    });
+    return await response.json();
+}
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>

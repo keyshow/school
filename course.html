@@ -1,0 +1,82 @@
+<form id="course-form">
+    <input type="hidden" id="course-id">
+    
+    <div class="form-group">
+        <label for="course-name">课程名称</label>
+        <input type="text" id="course-name" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="course-teacher">授课教师</label>
+        <input type="text" id="course-teacher" value="王秀老师" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="course-time">上课时间</label>
+        <input type="text" id="course-time" placeholder="例如：周一 08:00-09:30" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="course-location">上课地点</label>
+        <input type="text" id="course-location" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="course-status">课程状态</label>
+        <select id="course-status" required>
+            <option value="进行中">进行中</option>
+            <option value="已结束">已结束</option>
+            <option value="未开始">未开始</option>
+        </select>
+    </div>
+    
+    <div class="form-actions">
+        <button type="button" class="btn btn-outline" id="cancel-btn">取消</button>
+        <button type="submit" class="btn btn-primary">保存课程</button>
+    </div>
+</form>
+
+<script>
+document.getElementById('course-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const courseData = {
+        id: document.getElementById('course-id').value || null,
+        name: document.getElementById('course-name').value,
+        teacher: document.getElementById('course-teacher').value,
+        time: document.getElementById('course-time').value,
+        location: document.getElementById('course-location').value,
+        status: document.getElementById('course-status').value
+    };
+    
+    try {
+        // 使用LocalStorage方案
+        const courseId = saveCourse(courseData);
+        
+        // 或者使用API方案
+        // const result = await saveCourse(courseData);
+        
+        alert('课程保存成功');
+        window.location.href = 'courses.html'; // 返回课程列表
+        
+    } catch (error) {
+        console.error('保存课程失败:', error);
+        alert('保存课程失败，请重试');
+    }
+});
+
+// 如果是编辑页面，加载现有课程数据
+if(window.location.search.includes('edit=')) {
+    const courseId = new URLSearchParams(window.location.search).get('edit');
+    const course = getCourseById(courseId); // 需要实现此函数
+    
+    if(course) {
+        document.getElementById('course-id').value = course.id;
+        document.getElementById('course-name').value = course.name;
+        document.getElementById('course-teacher').value = course.teacher;
+        document.getElementById('course-time').value = course.time;
+        document.getElementById('course-location').value = course.location;
+        document.getElementById('course-status').value = course.status;
+    }
+}
+</script>
