@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程管理系统 - 课程表单</title>
+    <link rel="stylesheet" href="css/style.css">
+<script src="js/main.js"></script>
+<script src="js/course-form.js"></script>
+<!-- 如果是开发环境 -->
+<script src="api/mock-api.js"></script>
+
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <h1>课程管理系统</h1>
+        </div>
+        <div class="header-right">
+            <div class="user-info">
+                <div class="user-avatar">王</div>
+                <span>王秀老师</span>
+            </div>
+            <button class="logout-btn">退出</button>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+            <span class="breadcrumb-separator">/</span>
+            <a href="course.html">课程列表</a>
+            <span class="breadcrumb-separator">/</span>
+            <span id="form-title">添加课程</span>
+        </div>
+        
+        <div class="form-container">
+            <form id="course-form">
+                <input type="hidden" id="course-id">
+                
+                <div class="form-group">
+                    <label for="course-name">课程名称 *</label>
+                    <input type="text" id="course-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="course-teacher">授课教师 *</label>
+                    <input type="text" id="course-teacher" value="王秀老师" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="course-time">上课时间 *</label>
+                    <input type="text" id="course-time" placeholder="例如：周一 08:00-09:30" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="course-location">上课地点 *</label>
+                    <input type="text" id="course-location" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="course-status">课程状态 *</label>
+                    <select id="course-status" required>
+                        <option value="进行中">进行中</option>
+                        <option value="已结束">已结束</option>
+                        <option value="未开始">未开始</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <a href="course.html" class="btn btn-outline">取消</a>
+                    <button type="submit" class="btn btn-primary">保存课程</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/course-form.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</body>
+</html>
