@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程排课系统 - 学生管理</title>
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --danger-color: #ea4335;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-left h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .breadcrumb-separator {
+            margin: 0 5px;
+            color: #999;
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #ddd;
+            color: var(--dark-gray);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--light-gray);
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .delete-btn {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .view-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        
+        .alert-danger {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        
+        @media (max-width: 768px) {
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>课程排课系统</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="user-avatar">Show</div>
+                    <span>王秀老师</span>
+                </div>
+                <button class="logout-btn">退出</button>
+            </div>
+        </header>
+        
+        <div class="breadcrumb">
+            <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+            <span class="breadcrumb-separator">/</span>
+            <span>学生管理</span>
+        </div>
+        
+        <div class="content-header">
+            <h2>学生管理</h2>
+            <button class="btn btn-primary" id="add-student-btn">
+                <i class="fas fa-plus"></i> 添加学生
+            </button>
+        </div>
+        
+        <div id="alert-message" class="alert"></div>
+        
+        <table id="students-table">
+            <thead>
+                <tr>
+                    <th>学号</th>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>年级</th>
+                    <th>班级</th>
+                    <th>联系电话</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 学生数据将通过JavaScript动态生成 -->
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- 添加/编辑学生模态框 -->
+    <div id="student-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">添加学生</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="student-form">
+                <input type="hidden" id="student-id">
+                
+                <div class="form-group">
+                    <label for="student-number">学号</label>
+                    <input type="text" id="student-number" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-name">姓名</label>
+                    <input type="text" id="student-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-gender">性别</label>
+                    <select id="student-gender" required>
+                        <option value="">请选择性别</option>
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-grade">年级</label>
+                    <select id="student-grade" required>
+                        <option value="">请选择年级</option>
+                        <option value="一年级">一年级</option>
+                        <option value="二年级">二年级</option>
+                        <option value="三年级">三年级</option>
+                        <option value="四年级">四年级</option>
+                        <option value="五年级">五年级</option>
+                        <option value="六年级">六年级</option>
+                        <option value="初一">初一</option>
+                        <option value="初二">初二</option>
+                        <option value="初三">初三</option>
+                        <option value="高一">高一</option>
+                        <option value="高二">高二</option>
+                        <option value="高三">高三</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-class">班级</label>
+                    <input type="text" id="student-class" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-phone">联系电话</label>
+                    <input type="tel" id="student-phone">
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-notes">备注</label>
+                    <input type="text" id="student-notes">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="cancel-btn">取消</button>
+                    <button type="submit" class="btn btn-primary" id="save-btn">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 确认删除模态框 -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>确认删除</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>确定要删除这个学生吗？此操作无法撤销。</p>
+                <input type="hidden" id="delete-student-id">
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="cancel-delete-btn">取消</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete-btn">确认删除</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 学生数据
+        let students = [
+            { id: 1, number: '2023001', name: '李明', gender: '男', grade: '高一', class: '1班', phone: '13800138001', notes: '数学特长生' },
+            { id: 2, number: '2023002', name: '王芳', gender: '女', grade: '高一', class: '1班', phone: '13800138002', notes: '英语优秀' },
+            { id: 3, number: '2023003', name: '张伟', gender: '男', grade: '高一', class: '2班', phone: '13800138003', notes: '编程爱好者' },
+            { id: 4, number: '2023004', name: '刘洋', gender: '男', grade: '高二', class: '3班', phone: '13800138004', notes: '物理竞赛生' },
+            { id: 5, number: '2023005', name: '陈静', gender: '女', grade: '高二', class: '3班', phone: '13800138005', notes: '艺术特长生' }
+        ];
+        
+        // DOM元素
+        const studentsTable = document.getElementById('students-table');
+        const studentForm = document.getElementById('student-form');
+        const studentModal = document.getElementById('student-modal');
+        const confirmModal = document.getElementById('confirm-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const addStudentBtn = document.getElementById('add-student-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const saveBtn = document.getElementById('save-btn');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        const closeButtons = document.querySelectorAll('.close');
+        const alertMessage = document.getElementById('alert-message');
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            renderStudentsTable();
+        });
+        
+        // 渲染学生表格
+        function renderStudentsTable() {
+            const tbody = studentsTable.querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            if (students.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="7" style="text-align: center;">暂无学生数据</td>`;
+                tbody.appendChild(row);
+                return;
+            }
+            
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.number}</td>
+                    <td>${student.name}</td>
+                    <td>${student.gender}</td>
+                    <td>${student.grade}</td>
+                    <td>${student.class}</td>
+                    <td>${student.phone}</td>
+                    <td>
+                        <button class="action-btn view-btn" data-id="${student.id}">
+                            <i class="fas fa-eye"></i> 查看
+                        </button>
+                        <button class="action-btn edit-btn" data-id="${student.id}">
+                            <i class="fas fa-edit"></i> 编辑
+                        </button>
+                        <button class="action-btn delete-btn" data-id="${student.id}">
+                            <i class="fas fa-trash"></i> 删除
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // 添加事件监听器
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    editStudent(parseInt(this.getAttribute('data-id')));
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    showConfirmModal(parseInt(this.getAttribute('data-id')));
+                });
+            });
+            
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    viewStudent(parseInt(this.getAttribute('data-id')));
+                });
+            });
+        }
+        
+        // 添加学生
+        addStudentBtn.addEventListener('click', function() {
+            modalTitle.textContent = '添加学生';
+            studentForm.reset();
+            document.getElementById('student-id').value = '';
+            studentModal.style.display = 'block';
+        });
+        
+        // 编辑学生
+        function editStudent(id) {
+            const student = students.find(s => s.id === id);
+            if (!student) return;
+            
+            modalTitle.textContent = '编辑学生';
+            document.getElementById('student-id').value = student.id;
+            document.getElementById('student-number').value = student.number;
+            document.getElementById('student-name').value = student.name;
+            document.getElementById('student-gender').value = student.gender;
+            document.getElementById('student-grade').value = student.grade;
+            document.getElementById('student-class').value = student.class;
+            document.getElementById('student-phone').value = student.phone;
+            document.getElementById('student-notes').value = student.notes;
+            
+            studentModal.style.display = 'block';
+        }
+        
+        // 查看学生
+        function viewStudent(id) {
+            const student = students.find(s => s.id === id);
+            if (!student) return;
+            
+            alert(`
+                学生信息：
+                学号: ${student.number}
+                姓名: ${student.name}
+                性别: ${student.gender}
+                年级: ${student.grade}
+                班级: ${student.class}
+                电话: ${student.phone}
+                备注: ${student.notes}
+            `);
+        }
+        
+        // 显示确认删除模态框
+        function showConfirmModal(id) {
+            document.getElementById('delete-student-id').value = id;
+            confirmModal.style.display = 'block';
+        }
+        
+        // 保存学生
+        studentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('student-id').value;
+            const number = document.getElementById('student-number').value.trim();
+            const name = document.getElementById('student-name').value.trim();
+            const gender = document.getElementById('student-gender').value;
+            const grade = document.getElementById('student-grade').value;
+            const classVal = document.getElementById('student-class').value.trim();
+            const phone = document.getElementById('student-phone').value.trim();
+            const notes = document.getElementById('student-notes').value.trim();
+            
+            // 验证学号是否已存在
+            if (id === '' && students.some(s => s.number === number)) {
+                showAlert('学号已存在，请使用不同的学号', 'danger');
+                return;
+            }
+            
+            if (id) {
+                // 编辑现有学生
+                const index = students.findIndex(s => s.id === parseInt(id));
+                if (index !== -1) {
+                    students[index] = {
+                        ...students[index],
+                        number,
+                        name,
+                        gender,
+                        grade,
+                        class: classVal,
+                        phone,
+                        notes
+                    };
+                    showAlert('学生信息更新成功', 'success');
+                }
+            } else {
+                // 添加新学生
+                const newId = students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1;
+                students.push({
+                    id: newId,
+                    number,
+                    name,
+                    gender,
+                    grade,
+                    class: classVal,
+                    phone,
+                    notes
+                });
+                showAlert('学生添加成功', 'success');
+            }
+            
+            renderStudentsTable();
+            studentModal.style.display = 'none';
+        });
+        
+        // 确认删除学生
+        confirmDeleteBtn.addEventListener('click', function() {
+            const id = parseInt(document.getElementById('delete-student-id').value);
+            students = students.filter(s => s.id !== id);
+            renderStudentsTable();
+            showAlert('学生删除成功', 'success');
+            confirmModal.style.display = 'none';
+        });
+        
+        // 取消按钮
+        cancelBtn.addEventListener('click', function() {
+            studentModal.style.display = 'none';
+        });
+        
+        cancelDeleteBtn.addEventListener('click', function() {
+            confirmModal.style.display = 'none';
+        });
+        
+        // 关闭模态框
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                studentModal.style.display = 'none';
+                confirmModal.style.display = 'none';
+            });
+        });
+        
+        // 点击模态框外部关闭
+        window.addEventListener('click', function(event) {
+            if (event.target === studentModal) {
+                studentModal.style.display = 'none';
+            }
+            if (event.target === confirmModal) {
+                confirmModal.style.display = 'none';
+            }
+        });
+        
+        // 显示提示消息
+        function showAlert(message, type) {
+            alertMessage.textContent = message;
+            alertMessage.style.display = 'block';
+            alertMessage.className = `alert alert-${type}`;
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                alertMessage.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 退出登录
+        document.querySelector('.logout-btn').addEventListener('click', function() {
+            if (confirm('确定要退出登录吗？')) {
+                // 在实际应用中，这里会清除登录状态
+                window.location.href = 'account.html';
+            }
+        });
+    </script>
+</body>
+</html>

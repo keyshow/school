@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程排课系统 - 系统设置</title>
+    <style>
+        :root {
+            --primary-color: #4285f4;
+            --secondary-color: #34a853;
+            --danger-color: #ea4335;
+            --warning-color: #fbbc05;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-left h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .breadcrumb-separator {
+            margin: 0 5px;
+            color: #999;
+        }
+        
+        .settings-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            position: relative;
+        }
+        
+        .tab-btn.active {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .settings-section {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #ddd;
+            color: var(--dark-gray);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input, 
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--light-gray);
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .delete-btn {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .toggle-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .status-active {
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+        
+        .status-inactive {
+            color: var(--danger-color);
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .alert-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        
+        .alert-danger {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .backup-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .backup-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .backup-info {
+            flex: 1;
+        }
+        
+        .backup-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .settings-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            
+            .backup-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .backup-actions {
+                align-self: flex-end;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>课程排课系统</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="user-avatar">张</div>
+                    <span>张老师</span>
+                </div>
+                <button class="logout-btn">退出</button>
+            </div>
+        </header>
+        
+        <div class="breadcrumb">
+            <a href="index.html"><i class="fas fa-home"></i> 首页</a>
+            <span class="breadcrumb-separator">/</span>
+            <span>系统设置</span>
+        </div>
+        
+        <div class="settings-tabs">
+            <button class="tab-btn active" data-tab="system-settings">系统参数</button>
+            <button class="tab-btn" data-tab="user-management">用户管理</button>
+            <button class="tab-btn" data-tab="data-backup">数据备份</button>
+        </div>
+        
+        <div id="alert-message" class="alert"></div>
+        
+        <!-- 系统参数设置 -->
+        <div id="system-settings" class="tab-content active">
+            <div class="settings-section">
+                <div class="section-header">
+                    <h3 class="section-title">基本设置</h3>
+                </div>
+                
+                <form id="system-settings-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="system-name">系统名称</label>
+                            <input type="text" id="system-name" value="课程排课系统">
+                        </div>
+                        <div class="form-group">
+                            <label for="time-zone">时区设置</label>
+                            <select id="time-zone">
+                                <option value="Asia/Shanghai" selected>中国标准时间 (UTC+8)</option>
+                                <option value="America/New_York">美国东部时间 (UTC-5)</option>
+                                <option value="Europe/London">伦敦时间 (UTC+0)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date-format">日期格式</label>
+                        <select id="date-format">
+                            <option value="YYYY-MM-DD" selected>YYYY-MM-DD</option>
+                            <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                            <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="time-format">时间格式</label>
+                        <select id="time-format">
+                            <option value="24" selected>24小时制</option>
+                            <option value="12">12小时制</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>系统功能</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="enable-notifications" checked>
+                                <label for="enable-notifications">启用通知功能</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="enable-reminders" checked>
+                                <label for="enable-reminders">启用提醒功能</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="enable-export" checked>
+                                <label for="enable-export">启用导出功能</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="reset" class="btn btn-outline">重置</button>
+                        <button type="submit" class="btn btn-primary">保存设置</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="settings-section">
+                <div class="section-header">
+                    <h3 class="section-title">通知设置</h3>
+                </div>
+                
+                <form id="notification-settings-form">
+                    <div class="form-group">
+                        <label for="email-notification">电子邮件通知</label>
+                        <select id="email-notification">
+                            <option value="enabled" selected>启用</option>
+                            <option value="disabled">禁用</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sms-notification">短信通知</label>
+                        <select id="sms-notification">
+                            <option value="enabled">启用</option>
+                            <option value="disabled" selected>禁用</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notification-email">通知邮箱</label>
+                        <input type="email" id="notification-email" value="admin@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notification-phone">通知手机</label>
+                        <input type="tel" id="notification-phone" value="13800138000">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="reset" class="btn btn-outline">重置</button>
+                        <button type="submit" class="btn btn-primary">保存设置</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 用户管理 -->
+        <div id="user-management" class="tab-content">
+            <div class="settings-section">
+                <div class="section-header">
+                    <h3 class="section-title">用户列表</h3>
+                    <button class="btn btn-primary" id="add-user-btn">
+                        <i class="fas fa-plus"></i> 添加用户
+                    </button>
+                </div>
+                
+                <table id="users-table">
+                    <thead>
+                        <tr>
+                            <th>用户名</th>
+                            <th>姓名</th>
+                            <th>角色</th>
+                            <th>状态</th>
+                            <th>最后登录</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>admin</td>
+                            <td>张老师</td>
+                            <td>管理员</td>
+                            <td class="status-active">活跃</td>
+                            <td>2023-06-10 14:30</td>
+                            <td>
+                                <button class="action-btn edit-btn">
+                                    <i class="fas fa-edit"></i> 编辑
+                                </button>
+                                <button class="action-btn delete-btn">
+                                    <i class="fas fa-trash"></i> 删除
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>teacher1</td>
+                            <td>李老师</td>
+                            <td>教师</td>
+                            <td class="status-active">活跃</td>
+                            <td>2023-06-09 10:15</td>
+                            <td>
+                                <button class="action-btn edit-btn">
+                                    <i class="fas fa-edit"></i> 编辑
+                                </button>
+                                <button class="action-btn delete-btn">
+                                    <i class="fas fa-trash"></i> 删除
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>teacher2</td>
+                            <td>王老师</td>
+                            <td>教师</td>
+                            <td class="status-inactive">禁用</td>
+                            <td>2023-05-20 16:45</td>
+                            <td>
+                                <button class="action-btn edit-btn">
+                                    <i class="fas fa-edit"></i> 编辑
+                                </button>
+                                <button class="action-btn delete-btn">
+                                    <i class="fas fa-trash"></i> 删除
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="settings-section">
+                <div class="section-header">
+                    <h3 class="section-title">角色权限</h3>
+                </div>
+                
+                <table id="roles-table">
+                    <thead>
+                        <tr>
+                            <th>角色名称</th>
+                            <th>描述</th>
+                            <th>权限数量</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>管理员</td>
+                            <td>系统管理员，拥有所有权限</td>
+                            <td>全部</td>
+                            <td>
+                                <button class="action-btn edit-btn">
+                                    <i class="fas fa-edit"></i> 编辑
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>教师</td>
+                            <td>教师角色，可以管理课程和学生</td>
+                            <td>15</td>
+                            <td>
+                                <button class="action-btn edit-btn">
+                                    <i class="fas fa-edit"></i> 编辑
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>学生</td>
+                            <td>学生角色，只能查看自己的课程</td>
+                            <td>5</td>
+                            <td>
+                                <button class="action-btn edit-btn">
+                                    <i class="fas fa-edit"></i> 编辑
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 数据备份 -->
+        <div id="data-backup" class="tab-content">
+            <div class="settings-section">
+                <div class="section-header">
+                    <h3 class="section-title">数据备份</h3>
+                    <div>
+                        <button class="btn btn-outline" id="manual-backup-btn">
+                            <i class="fas fa-download"></i> 手动备份
+                        </button>
+                        <button class="btn btn-primary" id="auto-backup-settings-btn">
+                            <i class="fas fa-cog"></i> 自动备份设置
+                        </button>
+                    </div>
+                </div>
+                
+                <ul class="backup-list" id="backup-list">
+                    <li class="backup-item">
+                        <div class="backup-info">
+                            <strong>完整备份 - 2023-06-10</strong>
+                            <div>大小: 15.2 MB</div>
+                            <div>类型: 手动备份</div>
+                        </div>
+                        <div class="backup-actions">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i> 下载
+                            </button>
+                            <button class="btn btn-danger">
+                                <i class="fas fa-trash"></i> 删除
+                            </button>
+                        </div>
+                    </li>
+                    <li class="backup-item">
+                        <div class="backup-info">
+                            <strong>完整备份 - 2023-06-05</strong>
+                            <div>大小: 14.8 MB</div>
+                            <div>类型: 自动备份</div>
+                        </div>
+                        <div class="backup-actions">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i> 下载
+                            </button>
+                            <button class="btn btn-danger">
+                                <i class="fas fa-trash"></i> 删除
+                            </button>
+                        </div>
+                    </li>
+                    <li class="backup-item">
+                        <div class="backup-info">
+                            <strong>完整备份 - 2023-05-30</strong>
+                            <div>大小: 14.5 MB</div>
+                            <div>类型: 自动备份</div>
+                        </div>
+                        <div class="backup-actions">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-download"></i> 下载
+                            </button>
+                            <button class="btn btn-danger">
+                                <i class="fas fa-trash"></i> 删除
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="settings-section">
+                <div class="section-header">
+                    <h3 class="section-title">数据恢复</h3>
+                </div>
+                
+                <form id="restore-form">
+                    <div class="form-group">
+                        <label for="backup-file">选择备份文件</label>
+                        <input type="file" id="backup-file" accept=".sql,.backup,.zip">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="restore-options">恢复选项</label>
+                        <select id="restore-options">
+                            <option value="full">完全恢复（覆盖现有数据）</option>
+                            <option value="partial" selected>部分恢复（仅恢复选定的数据）</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="partial-restore-options">
+                        <label>选择要恢复的数据</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="restore-users" checked>
+                                <label for="restore-users">用户数据</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="restore-courses" checked>
+                                <label for="restore-courses">课程数据</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="restore-students" checked>
+                                <label for="restore-students">学生数据</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="restore-settings" checked>
+                                <label for="restore-settings">系统设置</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> 开始恢复
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 添加/编辑用户模态框 -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">添加用户</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="user-form">
+                <input type="hidden" id="user-id">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" id="password" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="full-name">姓名</label>
+                        <input type="text" id="full-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">电子邮箱</label>
+                        <input type="email" id="email" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">联系电话</label>
+                        <input type="tel" id="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="role">角色</label>
+                        <select id="role" required>
+                            <option value="">请选择角色</option>
+                            <option value="admin">管理员</option>
+                            <option value="teacher" selected>教师</option>
+                            <option value="student">学生</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">状态</label>
+                    <select id="status" required>
+                        <option value="active" selected>活跃</option>
+                        <option value="inactive">禁用</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="cancel-user-btn">取消</button>
+                    <button type="submit" class="btn btn-primary" id="save-user-btn">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 自动备份设置模态框 -->
+    <div id="auto-backup-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>自动备份设置</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="auto-backup-form">
+                <div class="form-group">
+                    <label for="auto-backup-enabled">自动备份</label>
+                    <select id="auto-backup-enabled">
+                        <option value="enabled" selected>启用</option>
+                        <option value="disabled">禁用</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="backup-frequency">备份频率</label>
+                    <select id="backup-frequency">
+                        <option value="daily">每天</option>
+                        <option value="weekly" selected>每周</option>
+                        <option value="monthly">每月</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="weekly-day-group">
+                    <label for="backup-day">备份日</label>
+                    <select id="backup-day">
+                        <option value="1">周一</option>
+                        <option value="2">周二</option>
+                        <option value="3">周三</option>
+                        <option value="4">周四</option>
+                        <option value="5" selected>周五</option>
+                        <option value="6">周六</option>
+                        <option value="7">周日</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="monthly-day-group" style="display: none;">
+                    <label for="backup-month-day">备份日</label>
+                    <select id="backup-month-day">
+                        <option value="1">1日</option>
+                        <option value="15" selected>15日</option>
+                        <option value="28">28日</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="backup-time">备份时间</label>
+                    <input type="time" id="backup-time" value="02:00">
+                </div>
+                
+                <div class="form-group">
+                    <label for="backup-retention">保留备份数量</label>
+                    <input type="number" id="backup-retention" min="1" max="100" value="10">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="cancel-auto-backup-btn">取消</button>
+                    <button type="submit" class="btn btn-primary">保存设置</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 标签页切换
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // 移除所有标签页和内容的active类
+                document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // 为当前标签页和内容添加active类
+                this.classList.add('active');
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // 系统设置表单提交
+        document.getElementById('system-settings-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showAlert('系统设置已保存', 'success');
+        });
+        
+        // 通知设置表单提交
+        document.getElementById('notification-settings-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showAlert('通知设置已保存', 'success');
+        });
+        
+        // 备份频率切换
+        document.getElementById('backup-frequency').addEventListener('change', function() {
+            const frequency = this.value;
+            document.getElementById('weekly-day-group').style.display = 'none';
+            document.getElementById('monthly-day-group').style.display = 'none';
+            
+            if (frequency === 'weekly') {
+                document.getElementById('weekly-day-group').style.display = 'block';
+            } else if (frequency === 'monthly') {
+                document.getElementById('monthly-day-group').style.display = 'block';
+            }
+        });
+        
+        // 恢复选项切换
+        document.getElementById('restore-options').addEventListener('change', function() {
+            const option = this.value;
+            document.getElementById('partial-restore-options').style.display = 
+                option === 'partial' ? 'block' : 'none';
+        });
+        
+        // 添加用户按钮
+        document.getElementById('add-user-btn').addEventListener('click', function() {
+            document.getElementById('modal-title').textContent = '添加用户';
+            document.getElementById('user-form').reset();
+            document.getElementById('user-id').value = '';
+            document.getElementById('user-modal').style.display = 'block';
+        });
+        
+        // 编辑用户按钮
+        document.querySelectorAll('#users-table .edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // 在实际应用中，这里会获取用户数据并填充表单
+                document.getElementById('modal-title').textContent = '编辑用户';
+                document.getElementById('user-id').value = '1'; // 示例ID
+                document.getElementById('username').value = 'teacher1';
+                document.getElementById('password').value = 'password123';
+                document.getElementById('full-name').value = '李老师';
+                document.getElementById('email').value = 'li@example.com';
+                document.getElementById('phone').value = '13800138001';
+                document.getElementById('role').value = 'teacher';
+                document.getElementById('status').value = 'active';
+                document.getElementById('user-modal').style.display = 'block';
+            });
+        });
+        
+        // 删除用户按钮
+        document.querySelectorAll('#users-table .delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (confirm('确定要删除这个用户吗？此操作无法撤销。')) {
+                    // 在实际应用中，这里会删除用户
+                    showAlert('用户已删除', 'success');
+                }
+            });
+        });
+        
+        // 自动备份设置按钮
+        document.getElementById('auto-backup-settings-btn').addEventListener('click', function() {
+            document.getElementById('auto-backup-modal').style.display = 'block';
+        });
+        
+        // 手动备份按钮
+        document.getElementById('manual-backup-btn').addEventListener('click', function() {
+            // 在实际应用中，这里会触发备份过程
+            showAlert('手动备份已开始，完成后将显示在备份列表中', 'success');
+            
+            // 模拟备份完成
+            setTimeout(() => {
+                const now = new Date();
+                const dateStr = now.toISOString().split('T')[0];
+                
+                const backupList = document.getElementById('backup-list');
+                const newBackup = document.createElement('li');
+                newBackup.className = 'backup-item';
+                newBackup.innerHTML = `
+                    <div class="backup-info">
+                        <strong>完整备份 - ${dateStr}</strong>
+                        <div>大小: 15.5 MB</div>
+                        <div>类型: 手动备份</div>
+                    </div>
+                    <div class="backup-actions">
+                        <button class="btn btn-outline">
+                            <i class="fas fa-download"></i> 下载
+                        </button>
+                        <button class="btn btn-danger">
+                            <i class="fas fa-trash"></i> 删除
+                        </button>
+                    </div>
+                `;
+                
+                backupList.prepend(newBackup);
+            }, 2000);
+        });
+        
+        // 用户表单提交
+        document.getElementById('user-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('user-id').value;
+            if (id) {
+                showAlert('用户信息已更新', 'success');
+            } else {
+                showAlert('用户添加成功', 'success');
+            }
+            
+            document.getElementById('user-modal').style.display = 'none';
+        });
+        
+        // 自动备份表单提交
+        document.getElementById('auto-backup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showAlert('自动备份设置已保存', 'success');
+            document.getElementById('auto-backup-modal').style.display = 'none';
+        });
+        
+        // 恢复表单提交
+        document.getElementById('restore-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fileInput = document.getElementById('backup-file');
+            if (fileInput.files.length === 0) {
+                showAlert('请选择备份文件', 'danger');
+                return;
+            }
+            
+            showAlert('数据恢复已开始，请勿关闭页面', 'success');
+        });
+        
+        // 关闭按钮
+        document.querySelectorAll('.close').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.closest('.modal').style.display = 'none';
+            });
+        });
+        
+        // 取消按钮
+        document.getElementById('cancel-user-btn').addEventListener('click', function() {
+            document.getElementById('user-modal').style.display = 'none';
+        });
+        
+        document.getElementById('cancel-auto-backup-btn').addEventListener('click', function() {
+            document.getElementById('auto-backup-modal').style.display = 'none';
+        });
+        
+        // 点击模态框外部关闭
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        });
+        
+        // 显示提示消息
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert-message');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            alert.className = `alert alert-${type}`;
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 退出登录
+        document.querySelector('.logout-btn').addEventListener('click', function() {
+            if (confirm('确定要退出登录吗？')) {
+                // 在实际应用中，这里会清除登录状态
+                window.location.href = 'account.html';
+            }
+        });
+    </script>
+</body>
+</html>
